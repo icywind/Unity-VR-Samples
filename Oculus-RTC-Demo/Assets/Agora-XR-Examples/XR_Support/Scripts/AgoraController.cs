@@ -104,13 +104,12 @@ namespace Agora.Rtc.Extended
 
             _rtcEngine = RtcEngine.CreateAgoraRtcEngine();
             UserEventHandler handler = new UserEventHandler(this);
-            RtcEngineContext context = new RtcEngineContext(
-                appId: APP_ID,
-                context: 0,
-                channelProfile: CHANNEL_PROFILE_TYPE.CHANNEL_PROFILE_LIVE_BROADCASTING,
-                audioScenario: AUDIO_SCENARIO_TYPE.AUDIO_SCENARIO_DEFAULT,
-                areaCode: AREA_CODE.AREA_CODE_GLOB
-                );
+            var context = new RtcEngineContext();
+            context.appId = APP_ID;
+            context.channelProfile = CHANNEL_PROFILE_TYPE.CHANNEL_PROFILE_LIVE_BROADCASTING;
+            context.audioScenario = AUDIO_SCENARIO_TYPE.AUDIO_SCENARIO_GAME_STREAMING;
+            context.areaCode = AREA_CODE.AREA_CODE_GLOB;
+
             var rc = _rtcEngine.Initialize(context);
             Debug.Assert(rc == 0, "rtcEngine init failed");
             rc = _rtcEngine.InitEventHandler(handler);
@@ -121,7 +120,6 @@ namespace Agora.Rtc.Extended
             //_rtcEngine.SetExternalAudioSource(true, CustomAudioCapturer.SAMPLE_RATE, CustomAudioCapturer.CHANNEL, 1);
 
             _rtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
-            _rtcEngine.SetAudioProfile(AUDIO_PROFILE_TYPE.AUDIO_PROFILE_DEFAULT, AUDIO_SCENARIO_TYPE.AUDIO_SCENARIO_GAME_STREAMING);
 
             _rtcEngine.EnableVideo();
 
@@ -188,7 +186,7 @@ namespace Agora.Rtc.Extended
             option.clientRoleType.SetValue(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
             option.channelProfile.SetValue(CHANNEL_PROFILE_TYPE.CHANNEL_PROFILE_LIVE_BROADCASTING);
 
-            _rtcEngine.JoinChannel(TOKEN, CHANNEL_NAME, _clientUID, option);
+            _rtcEngine.JoinChannel(TOKEN, CHANNEL_NAME, "", _clientUID);
         }
 
 

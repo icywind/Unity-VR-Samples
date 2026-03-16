@@ -80,7 +80,6 @@ namespace Agora.Rtc.Extended
                 RawBuffer = new byte[BufferLength],
                 renderTimeMs = 1000 / PUSH_FREQ_PER_SEC
             };
-            AgoraLog.Log("BufferLength = " + BufferLength);
         }
 
         private void Update()

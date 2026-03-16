@@ -149,26 +149,41 @@ namespace Agora.Rtc.Extended
             var bytesPerSample = 2;
             var type = AUDIO_FRAME_TYPE.FRAME_TYPE_PCM16;
             var channels = CHANNEL;
-            var samples = SAMPLE_RATE / PULL_FREQ_PER_SEC * CHANNEL;
+            var samplesPerChannel = SAMPLE_RATE / PULL_FREQ_PER_SEC;
             var samplesPerSec = SAMPLE_RATE;
-            var buffer = new byte[samples * bytesPerSample];
+            var byteBuffer = new byte[samplesPerChannel * bytesPerSample * channels];
             var freq = 1000 / PULL_FREQ_PER_SEC;
-
-            // BufferPtr = Marshal.AllocHGlobal(BUFFER_SIZE);
-
-            var tic = new TimeSpan(DateTime.Now.Ticks);
-
-            var byteArray = new byte[BUFFER_SIZE];
-            double startMillisecond = GetTimestamp();
-            long tick = 0;
-
-            AudioFrame audioFrame = new AudioFrame(
-             type, samples, BYTES_PER_SAMPLE.TWO_BYTES_PER_SAMPLE, channels, samplesPerSec, buffer, 0, avsync_type, 0);
-            BufferPtr = Marshal.AllocHGlobal(samples * bytesPerSample * channels);
-            audioFrame.buffer = BufferPtr;
+            
+            AudioFrame audioFrame = new AudioFrame
+            {
+                type = type,
+                samplesPerChannel = samplesPerChannel,
+                bytesPerSample = BYTES_PER_SAMPLE.TWO_BYTES_PER_SAMPLE,
+                channels = channels,
+                samplesPerSec = samplesPerSec,
+                avsync_type = avsync_type
+            };
+            audioFrame.buffer = Marshal.AllocHGlobal(samplesPerChannel * bytesPerSample * channels);
+/*
+            AudioFrame audioFrame2 = new AudioFrame
+            {
+                bytesPerSample = BYTES_PER_SAMPLE.TWO_BYTES_PER_SAMPLE,
+                type = AUDIO_FRAME_TYPE.FRAME_TYPE_PCM16,
+                samplesPerChannel = SAMPLE_RATE / PUSH_FREQ_PER_SEC,
+                samplesPerSec = SAMPLE_RATE,
+                channels = CHANNEL,
+                buffer =  Marshal.AllocHGlobal(samples * bytesPerSample * channels),
+                renderTimeMs = 1000 / PUSH_FREQ_PER_SEC
+            };
+            */
 
             Debug.Log("[Agora] PullAudioFrameThread starts, audioFrame buffer = " + audioFrame.buffer);
             int loopcount = 0;
+
+            var tic = new TimeSpan(DateTime.Now.Ticks);
+            double startMillisecond = GetTimestamp();
+            long tick = 0;
+
             while (_pullAudioFrameThreadSignal)
             {
                 int nRet = -1;
@@ -184,8 +199,8 @@ namespace Agora.Rtc.Extended
 
                 if (nRet == 0)
                 {
-                    Marshal.Copy((IntPtr)audioFrame.buffer, buffer, 0, buffer.Length);
-                    var floatArray = ConvertByteToFloat16(buffer);
+                    Marshal.Copy((IntPtr)audioFrame.buffer, byteBuffer, 0, byteBuffer.Length);
+                    var floatArray = ConvertByteToFloat16(byteBuffer);
                     lock (_audioBuffer)
                     {
                         _audioBuffer.Put(floatArray);
