@@ -3,8 +3,10 @@ This is a Unity demo implementation for integrating Agora RTC SDK with Oculus sp
 
 ## Sample Scene
 
-![OculusRTCDemo](https://github.com/user-attachments/assets/89da2251-de70-4b5f-a628-55a3cc606d31)
-
+Spatial Audio recording - recommend wearing headphones for better audio experience. <br>
+<video src="https://github.com/user-attachments/assets/89da2251-de70-4b5f-a628-55a3cc606d31" width="480" controls>
+  Your browser does not support the video tag.
+</video>
 
 ## Developer Environment Prerequisites
 - Unity 6 LTS
