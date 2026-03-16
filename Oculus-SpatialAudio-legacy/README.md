@@ -33,25 +33,6 @@ To build and run the sample application, get an App ID:
 7. [optional recommendation] Use Side Quest app to run/kill/unload App
 
 
-#### Test in Unity Editor 
-You can run this project in the Editor.  But you may have to fix a Oculus SDK bug:
-
-Update the OculusSampleFrameworkUtil.cs script with the following code snippet:
-``` 
-private static void HandlePlayModeState(PlayModeStateChange state)
-{
-        if (state == PlayModeStateChange.EnteredPlayMode)
-        {
-            System.Version v0 = new System.Version(0, 0, 0);
-            UnityEngine.Debug.Log("V0=" + v0.ToString());
-#if UNITY_EDITOR
-            OVRPlugin.SendEvent("load", v0.ToString(), "sample_framework");
-#else
-            OVRPlugin.SendEvent("load", OVRPlugin.wrapperVersion.ToString(), "sample_framework");
-#endif
-        }
- }
-```
 ## Resources
 - [Tutorial blog](https://www.agora.io/en/blog/how-to-build-a-vr-video-chat-app-with-spatial-audio-on-oculus/) describes this project
 - For potential Agora SDK issues, take a look at our [FAQ](https://docs.agora.io/en/faq) first
